@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Traffic light</title>
+  </head>
+  <body>
+    <div class="signalbody">
+      <div id="red" class="lamp red"></div>
+      <div id="orange" class="lamp orange"></div>
+      <div id="green" class="lamp green"></div>
+    </div>
+    <div class="pole"></div>
+    <div class="signalbase"></div>
+
+    <div class="counter"></div>
+    <div class="timer">
+      <div class="num" id="timer-num">0</div>
+    </div>
+
+    <div class="holder1"></div>
+    <div class="holder2"></div>
+
+    <div class="display">
+      <div class="human">
+        <svg height="80" width="80">
+          <g id="human">
+            <circle id="human-head" r="10" cx="30" cy="30"></circle>
+            <polyline
+              id="human-body"
+              points="30 30, 30 60, 40 80, 30 60, 20 80, 30 60, 30 40, 45 55, 30 40, 15 55, 30 40"
+              style="stroke: #221f1f; stroke-linecap: round; stroke-width: 8"
+            ></polyline>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="holder3"></div>
+    <div class="holder4"></div>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      .signalbody {
+        position: absolute;
+        width: 150px;
+        height: 350px;
+        background-color: rgb(36, 36, 36);
+        border-radius: 20px;
+        left: 198px;
+        top: 11px;
+        border: 3px solid black;
+      }
+
+      .red {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        left: 25px;
+        top: 20px;
+        border-radius: 50%;
+        border: 3px solid grey;
+      }
+
+      .orange {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        left: 25px;
+        top: 125px;
+        border-radius: 50%;
+        border: 3px solid grey;
+      }
+      .green {
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        left: 25px;
+        top: 230px;
+        border-radius: 50%;
+        border: 3px solid grey;
+      }
+
+      .lamp.red {
+        background-color: #330f0f;
+      }
+
+      .lamp.orange {
+        background-color: #36361a;
+      }
+
+      .lamp.green {
+        background-color: #0c350c;
+      }
+      .pole {
+        position: absolute;
+        background-color: rgb(36, 36, 36);
+        width: 50px;
+        height: 250px;
+        left: 250px;
+        top: 365px;
+        border: 3px solid black;
+      }
+
+      .signalbase {
+        position: absolute;
+        background-color: rgb(36, 36, 36);
+        width: 100px;
+        height: 20px;
+        left: 222px;
+        top: 600px;
+        border-top-left-radius: 40%;
+        border-top-right-radius: 40%;
+        border-bottom: 0;
+        border: 3px solid black;
+      }
+
+      .timer {
+        position: absolute;
+        width: 60px;
+        height: 75px;
+        background-color: rgb(36, 36, 36);
+        margin: 0px auto 0px auto;
+        left: 125px;
+        top: 370px;
+        padding: 10px;
+        border-radius: 15px;
+        border: 3px solid black;
+      }
+
+      .timer .num {
+        margin-top: 7px;
+        text-align: center;
+        bottom: 10px;
+        font-size: 50px;
+        font-weight: bold;
+        background-color: #555555;
+        border-radius: 20px;
+      }
+
+      .holder1 {
+        position: absolute;
+        width: 45px;
+        height: 15px;
+        background-color: rgb(36, 36, 36);
+        top: 395px;
+        left: 205px;
+      }
+
+      .holder2 {
+        position: absolute;
+        width: 45px;
+        height: 15px;
+        background-color: rgb(36, 36, 36);
+        top: 425px;
+        left: 205px;
+      }
+
+      .display {
+        position: absolute;
+        width: 60px;
+        height: 75px;
+        background-color: rgb(36, 36, 36);
+        left: 348px;
+        top: 370px;
+        padding: 10px;
+        border-radius: 15px;
+        border: 3px solid black;
+      }
+
+      .holder3 {
+        position: absolute;
+        width: 45px;
+        height: 15px;
+        background-color: rgb(36, 36, 36);
+        top: 395px;
+        left: 305px;
+      }
+
+      .holder4 {
+        position: absolute;
+        width: 45px;
+        height: 15px;
+        background-color: rgb(36, 36, 36);
+        top: 425px;
+        left: 305px;
+      }
+      .human {
+        background-color: rgb(36, 36, 36);
+      }
+    </style>
+
+    <script>
+      window.onload = function () {
+        var $ = function (e) {
+          return document.querySelector(e);
+        };
+
+        var setSubColor = function (c) {
+          $("#human-head").style.fill = c;
+          $("#human-body").style.stroke = c;
+        };
+
+        var setColor = function (e, c) {
+          e.style.backgroundColor = c;
+        };
+
+        var redLamp = $("#red");
+        var oraLamp = $("#orange");
+        var greLamp = $("#green");
+        var timerNum = $("#timer-num");
+
+        var green = "#00ff00";
+        var orange = " #ffc400";
+        var red = "#ff0000";
+        var gDim = "#0c350c";
+        var oDim = "#36361a";
+        var rDim = "#330f0f";
+
+        var gOn = new isOn();
+        var oOn = new isOn();
+        var rOn = new isOn();
+
+        function check(n) {
+          n = parseInt(n);
+          while (isNaN(n)) {
+            n = parseInt(prompt("enter a valid number!"));
+          }
+          return Math.floor(n);
+        }
+
+        var redTimer = check(10);
+        var oraTimer = check(3);
+        var greTimer = check(10);
+
+        var totalTime = greTimer + oraTimer + redTimer;
+        var timeCount = greTimer;
+
+        if (greTimer && oraTimer && redTimer) {
+          var i = 1;
+          var intr = setInterval(function () {
+            if (i <= greTimer) {
+              if (rOn.getOn()) {
+                timeCount = greTimer;
+              }
+              oOn.setOn(false);
+              rOn.setOn(false);
+              gOn.setOn(true);
+              timerNum.innerHTML = timeCount--;
+
+              setColor(oraLamp, oDim);
+              setColor(redLamp, rDim);
+              setColor(greLamp, green);
+              setSubColor("green");
+            } else if (i > greTimer && i <= greTimer + oraTimer) {
+              if (gOn.getOn()) {
+                timeCount = oraTimer;
+              }
+
+              gOn.setOn(false);
+              rOn.setOn(false);
+              oOn.setOn(true);
+
+              timerNum.innerHTML = timeCount--;
+
+              setColor(greLamp, gDim);
+              setColor(redLamp, rDim);
+              setColor(oraLamp, orange);
+              setSubColor("red");
+            } else {
+              if (oOn.getOn()) {
+                timeCount = redTimer;
+              }
+
+              gOn.setOn(false);
+              oOn.setOn(false);
+              rOn.setOn(true);
+
+              timerNum.innerHTML = timeCount--;
+
+              if (timeCount == redTimer - 1) setSubColor("green");
+              if (timeCount == 1) setSubColor("red");
+
+              setColor(oraLamp, oDim);
+              setColor(greLamp, gDim);
+              setColor(redLamp, red);
+              setSubColor("red");
+            }
+            i++;
+            if (i - 1 >= totalTime) i = 0;
+          }, 1000);
+        } else {
+          alert("error, don't input 0");
+        }
+      };
+
+      var isOn = function () {
+        this.on = false;
+        this.setOn = function (b) {
+          this.on = b;
+        };
+        this.getOn = function () {
+          return this.on;
+        };
+      };
+    </script>
+  </body>
+</html>
